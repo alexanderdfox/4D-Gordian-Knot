@@ -1,108 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>4D Fork Bomb Timeline</title>
-<style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>4D Fork Bomb Timeline</title>
+
+  <style>
+  :root {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --text: #1d1d1f;
+    --text-secondary: #6e6e73;
+    --accent: #007aff;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.10);
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+    --bg: #1c1c1e;
+    --card: #2c2c2e;
+    --text: #f5f5f7;
+    --text-secondary: #8e8e93;
+    }
+  }
+
   body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 32px 20px;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    background: #f5f7fa;
-    margin: 0;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1 {
-    color: #333;
-    margin-bottom: 20px;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin: 0 0 40px;
   }
 
   .controls {
     display: flex;
-    gap: 30px;
-    margin-bottom: 20px;
-    background: #fff;
-    padding: 15px 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 32px 48px;
+    background: var(--card);
+    padding: 24px 36px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    max-width: 100%;
   }
 
-  label {
-    cursor: pointer;
+  .toggle-group,
+  .mode-switch {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 17px;
     font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .toggle-group input:checked ~ span:first-child,
+  .mode-switch input:checked ~ span:first-child {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .switch {
     position: relative;
-    padding-left: 30px;
-    user-select: none;
+    width: 54px;
+    height: 32px;
   }
 
-  label input {
-    position: absolute;
+  .switch input {
     opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .slider {
+    position: absolute;
     cursor: pointer;
+    inset: 0;
+    background-color: #d1d1d6;
+    border-radius: 9999px;
+    transition: background-color .28s ease;
   }
 
-  label span {
+  .slider::before {
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 20px;
-    height: 20px;
-    border: 2px solid #007bff;
+    content: "✕";
+    font-size: 18px;
+    font-weight: bold;
+    color: #555;
+    height: 26px;
+    width: 26px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
     border-radius: 50%;
-    transition: 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.16);
+    transition: all .28s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  label input:checked + span {
-    background: #007bff;
-    border-color: #0056b3;
+  input:checked + .slider {
+    background-color: var(--accent);
   }
 
-  label span::after {
-    content: "";
-    position: absolute;
-    display: none;
+  input:checked + .slider::before {
+    transform: translateX(22px);
+    content: "✓";
+    color: white;
   }
 
-  label input:checked + span::after {
-    display: block;
-    left: 6px;
-    top: 6px;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: white;
+  @media (prefers-color-scheme: dark) {
+    .slider::before {
+    color: #aaa;
+    }
+    input:checked + .slider::before {
+    color: white;
+    }
+  }
+
+  .primary-btn {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    font-size: 17px;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0,122,255,0.25);
+    transition: all 0.2s ease;
+  }
+
+  .primary-btn:hover {
+    background: #0062cc;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(0,122,255,0.35);
   }
 
   svg {
-    border: 1px solid #ccc;
-    background: white;
-    width: 400px;
-    height: 400px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    margin-top: 40px;
+    max-width: 90vw;
+    height: auto;
+    transition: opacity 0.6s ease;
   }
-</style>
+  </style>
 </head>
 <body>
 
-<h1>Pick Left and/or Right Side</h1>
+  <h1>4D Fork Bomb Timeline</h1>
 
-<div class="controls">
-  <label>
-    <input type="checkbox" id="leftCheckbox" checked>
-    <span></span>
-    Left
-  </label>
-  <label>
-    <input type="checkbox" id="rightCheckbox" checked>
-    <span></span>
-    Right
-  </label>
-</div>
+  <div class="controls">
+  <div class="toggle-group">
+    <span>Left</span>
+    <label class="switch">
+    <input type="checkbox" id="leftToggle" checked>
+    <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="toggle-group">
+    <span>Right</span>
+    <label class="switch">
+    <input type="checkbox" id="rightToggle" checked>
+    <span class="slider"></span>
+    </label>
+  </div>
+
+  <div class="mode-switch">
+    <span>Visual</span>
+    <label class="switch">
+    <input type="checkbox" id="modeToggle">
+    <span class="slider"></span>
+    </label>
+    <span>Audio</span>
+  </div>
+
+  <button id="startAudio" class="primary-btn">Start Audio</button>
+  </div>
 
 <svg viewBox="0 0 875 1175">
   <!-- Base path -->
@@ -112,64 +205,211 @@
   <path id="leftPath" stroke="#007bff" stroke-width="2" fill="none"/>
   <!-- Animated right side -->
   <path id="rightPath" stroke="#ff4d4d" stroke-width="2" fill="none"/>
-</svg>
+  </svg>
 
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const basePath = document.getElementById("basePath");
-  const leftPath = document.getElementById("leftPath");
-  const rightPath = document.getElementById("rightPath");
-
-  const leftCheckbox = document.getElementById("leftCheckbox");
-  const rightCheckbox = document.getElementById("rightCheckbox");
-
-  // Sample the base path into points
-  function samplePath(path, samples = 400) {
-    const length = path.getTotalLength();
-    let points = [];
-    for (let i = 0; i <= samples; i++) {
-      let pt = path.getPointAtLength((i / samples) * length);
-      points.push({ x: pt.x, y: pt.y });
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+  
+    const basePath   = document.getElementById("basePath");
+    const leftPath   = document.getElementById("leftPath");
+    const rightPath  = document.getElementById("rightPath");
+    const leftToggle  = document.getElementById("leftToggle");
+    const rightToggle = document.getElementById("rightToggle");
+    const modeToggle  = document.getElementById("modeToggle");
+    const startBtn    = document.getElementById("startAudio");
+    const svg         = document.querySelector("svg");
+  
+    if (!basePath || !leftPath || !rightPath || !svg) {
+      console.error("Missing SVG elements");
+      return;
     }
-    return points;
-  }
-
-  // Cut points vertically
-  function cutPointsVertical(points, keep) {
-    let xs = points.map(p => p.x);
-    let centerX = (Math.min(...xs) + Math.max(...xs)) / 2;
-    return points.filter(p => keep === "left" ? p.x <= centerX : p.x >= centerX);
-  }
-
-  // Transform points
-  function transformPoint(x, y, t) {
-    let w = Math.sin(t + x*0.01 + y*0.01);
-    return { x: x + Math.sin(w*3)*20, y: y + Math.cos(w*3)*20 };
-  }
-
-  function pointsToPath(points) {
-    if (!points.length) return "";
-    let d = `M ${points[0].x} ${points[0].y}`;
-    for (let i = 1; i < points.length; i++) d += ` L ${points[i].x} ${points[i].y}`;
-    return d;
-  }
-
-  let originalPoints = samplePath(basePath);
-  let leftPoints = cutPointsVertical(originalPoints, "left");
-  let rightPoints = cutPointsVertical(originalPoints, "right");
-
-  let time = 0;
-  function animate() {
-    time += 0.05;
-    if (leftCheckbox.checked) leftPath.setAttribute("d", pointsToPath(leftPoints.map(p => transformPoint(p.x,p.y,time))));
-    else leftPath.setAttribute("d", "");
-    if (rightCheckbox.checked) rightPath.setAttribute("d", pointsToPath(rightPoints.map(p => transformPoint(p.x,p.y,time))));
-    else rightPath.setAttribute("d", "");
-    requestAnimationFrame(animate);
-  }
-  animate();
-});
-</script>
+  
+    function getMode() {
+      return modeToggle.checked ? "audio" : "visual";
+    }
+  
+    function samplePath(path, samples = 140) {
+      const len = path.getTotalLength();
+      const pts = [];
+      for (let i = 0; i <= samples; i++) {
+        const pt = path.getPointAtLength((i / samples) * len);
+        pts.push({ x: pt.x, y: pt.y });
+      }
+      return pts;
+    }
+  
+    function cut(points, side) {
+      const xs = points.map(p => p.x);
+      const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+      return points.filter(p => side === "left" ? p.x <= cx : p.x >= cx);
+    }
+  
+    function transform(p, t) {
+      const phase = t + p.x * 0.008 + p.y * 0.012;
+      const w = Math.sin(phase);
+      return {
+        x: p.x + Math.sin(w * 4) * 18,
+        y: p.y + Math.cos(w * 4) * 18
+      };
+    }
+  
+    function toPath(points) {
+      if (!points.length) return "";
+      let d = `M${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+      for (let i = 1; i < points.length; i++) {
+        d += ` L${points[i].x.toFixed(1)} ${points[i].y.toFixed(1)}`;
+      }
+      return d;
+    }
+  
+    // ───────── AUDIO ENGINE (FIXED) ─────────
+  
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.6; // audible baseline
+    masterGain.connect(audioCtx.destination);
+  
+    let audioStarted = false;
+    let lastAudioTrigger = -Infinity;
+    const AUDIO_BURST_INTERVAL = 0.18;
+  
+    function play(points, panVal = 0) {
+      if (points.length < 10) return;
+  
+      const now = audioCtx.currentTime;
+  
+      const grains = 24;       // LIMIT oscillators
+      const duration = 0.25;   // spread over time
+      const step = Math.floor(points.length / grains);
+  
+      for (let i = 0; i < grains; i++) {
+        const p = points[i * step];
+        if (!p) continue;
+  
+        const t = now + (i / grains) * duration;
+  
+        const osc = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+        const pan = audioCtx.createStereoPanner();
+  
+        const freq = 120 + (500 - p.y) * 1.5;
+  
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, t);
+        pan.pan.setValueAtTime(panVal, t);
+  
+        gainNode.gain.setValueAtTime(0.0001, t);
+        gainNode.gain.exponentialRampToValueAtTime(0.08, t + 0.01);
+        gainNode.gain.exponentialRampToValueAtTime(0.0001, t + 0.18);
+  
+        osc.connect(gainNode).connect(pan).connect(masterGain);
+  
+        osc.start(t);
+        osc.stop(t + 0.2);
+      }
+    }
+  
+    function fadeAudio(target) {
+      const now = audioCtx.currentTime;
+      masterGain.gain.cancelScheduledValues(now);
+      masterGain.gain.linearRampToValueAtTime(target, now + 0.3);
+    }
+  
+    // 🔥 REQUIRED Safari / browser unlock
+    startBtn.addEventListener("click", async () => {
+      if (audioCtx.state === "suspended") {
+        await audioCtx.resume();
+      }
+  
+      // silent kickstart
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.0001;
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.01);
+  
+      audioStarted = true;
+      startBtn.style.display = "none";
+    });
+  
+    // ───────── VISUAL SETUP ─────────
+  
+    const original = samplePath(basePath);
+    const leftPts  = cut(original, "left");
+    const rightPts = cut(original, "right");
+  
+    let time = 0;
+    let lastMode = getMode();
+  
+    function handleSwitch(mode) {
+      if (mode === "audio") {
+        svg.style.opacity = 0;
+  
+        if (audioCtx.state !== "running") {
+          audioCtx.resume();
+        }
+  
+        if (audioStarted) {
+          fadeAudio(0.8);
+        }
+  
+        leftPath.setAttribute("d", "");
+        rightPath.setAttribute("d", "");
+      } else {
+        fadeAudio(0);
+        svg.style.opacity = 1;
+      }
+    }
+  
+    function loop() {
+      time += 0.048;
+      const currentTime = audioCtx.currentTime;
+      const mode = getMode();
+  
+      if (mode !== lastMode) {
+        handleSwitch(mode);
+        lastMode = mode;
+      }
+  
+      // VISUAL MODE
+      if (mode === "visual") {
+        if (leftToggle.checked) {
+          const pts = leftPts.map(p => transform(p, time));
+          leftPath.setAttribute("d", toPath(pts));
+        } else {
+          leftPath.setAttribute("d", "");
+        }
+  
+        if (rightToggle.checked) {
+          const pts = rightPts.map(p => transform(p, time));
+          rightPath.setAttribute("d", toPath(pts));
+        } else {
+          rightPath.setAttribute("d", "");
+        }
+      }
+  
+      // AUDIO MODE
+      if (mode === "audio" && audioStarted && currentTime - lastAudioTrigger >= AUDIO_BURST_INTERVAL) {
+        lastAudioTrigger = currentTime;
+  
+        if (leftToggle.checked) {
+          const pts = leftPts.map(p => transform(p, time));
+          play(pts, -0.8);
+        }
+  
+        if (rightToggle.checked) {
+          const pts = rightPts.map(p => transform(p, time));
+          play(pts, 0.8);
+        }
+      }
+  
+      requestAnimationFrame(loop);
+    }
+  
+    loop();
+  });
+  </script>
 
 </body>
 </html>
